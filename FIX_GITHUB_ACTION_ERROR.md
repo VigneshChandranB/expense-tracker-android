@@ -1,3 +1,30 @@
+# 🔧 Fix GitHub Actions Error - Updated Workflow
+
+## ❌ Error You're Getting:
+```
+This request has been automatically failed because it uses a deprecated version of `actions/upload-artifact: v3`
+```
+
+## ✅ Quick Fix (2 minutes):
+
+### Method 1: Update Existing File
+1. **Go to your GitHub repository**
+2. **Navigate to**: `.github/workflows/build-apk.yml`
+3. **Click the pencil icon** (Edit this file)
+4. **Replace the entire content** with the updated version below
+5. **Click "Commit changes"**
+
+### Method 2: Delete and Recreate
+1. **Delete the old workflow file**
+2. **Create new file**: `.github/workflows/build-apk.yml`
+3. **Copy the updated content** below
+4. **Commit the file**
+
+## 📝 Updated Workflow Content:
+
+Copy this EXACT content into your `.github/workflows/build-apk.yml` file:
+
+```yaml
 name: Build Android APK
 
 on:
@@ -75,3 +102,27 @@ jobs:
         if [ -f "app/build/outputs/apk/release/app-release.apk" ]; then
           echo "APK size: $(du -h app/build/outputs/apk/release/app-release.apk | cut -f1)"
         fi
+```
+
+## 🔄 What Changed:
+- **Updated**: `actions/upload-artifact@v3` → `actions/upload-artifact@v4`
+- **Updated**: `actions/cache@v3` → `actions/cache@v4`
+- **All other actions**: Already using latest versions
+
+## ✅ After Updating:
+
+1. **Go to Actions tab**
+2. **Click "Build Android APK"**
+3. **Click "Run workflow"**
+4. **Build should now work!** ✅
+
+## 🎯 Expected Result:
+- ✅ Build completes successfully
+- ✅ APK artifact available for download
+- ✅ No deprecation warnings
+
+---
+
+**Fix Time**: 2 minutes to update file
+**Build Time**: 5 minutes after fix
+**Total**: 7 minutes to working APK!

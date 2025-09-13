@@ -25,7 +25,7 @@
 3. **Select ALL files and folders** (Ctrl+A)
 4. **Drag and drop** into GitHub upload area
 5. **Wait for upload** to complete
-6. **Scroll down** and click "Commit changes"
+6. **Scroll down** and click "Commit changes"       
 
 #### Method B: Individual Upload
 1. **Click "Add file" → "Upload files"**
