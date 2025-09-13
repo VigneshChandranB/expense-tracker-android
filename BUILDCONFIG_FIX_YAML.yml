@@ -27,7 +27,7 @@ workflows:
             # If no buildFeatures block, add it after android block starts
             sed -i '/android {/a\    buildFeatures {\n        buildConfig = true\n    }' app/build.gradle.kts
           fi
-
+          
           # Show the modified file to verify
           echo "Modified build.gradle.kts:"
           grep -A 10 -B 5 "buildFeatures\|buildConfig" app/build.gradle.kts || echo "BuildConfig configuration added"
@@ -55,7 +55,7 @@ workflows:
     publishing:
       email:
         recipients:
-          - bcvignesh3@gmail.com
+          - your-email@example.com
         notify:
           success: true
           failure: true
