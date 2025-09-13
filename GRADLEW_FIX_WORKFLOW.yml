@@ -15,10 +15,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Set up JDK 11
+    - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
-        java-version: '11'
+        java-version: '17'
         distribution: 'temurin'
         
     - name: Setup Android SDK
@@ -34,38 +34,23 @@ jobs:
         echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
         echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
         echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
+        echo "$HOME/android-sdk/build-tools/34.0.0" >> $GITHUB_PATH
         
         # Accept licenses and install required components
-        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
+        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
         $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-30" "platforms;android-34" "build-tools;34.0.0"
       
-    - name: Cache Gradle packages
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-          
-    - name: Setup Gradle Wrapper
+    - name: Setup Gradle
       run: |
-        # Check if gradlew exists, if not create it
-        if [ ! -f "gradlew" ]; then
-          echo "gradlew not found, creating it..."
-          # Download gradle wrapper
-          curl -s https://raw.githubusercontent.com/gradle/gradle/master/gradlew -o gradlew
-          curl -s https://raw.githubusercontent.com/gradle/gradle/master/gradlew.bat -o gradlew.bat
-        fi
+        # Install Gradle directly
+        wget -q https://services.gradle.org/distributions/gradle-8.4-bin.zip
+        unzip -q gradle-8.4-bin.zip
+        export PATH=$PATH:$PWD/gradle-8.4/bin
+        echo "$PWD/gradle-8.4/bin" >> $GITHUB_PATH
         
-        # Make gradlew executable
-        chmod +x gradlew
+        # Verify Gradle installation
+        gradle --version
         
-        # Verify gradlew works
-        ls -la gradlew
-        ./gradlew --version
-      
     - name: Create keystore
       run: |
         mkdir -p keystore
@@ -82,8 +67,10 @@ jobs:
         echo "RELEASE_KEY_PASSWORD=github_build" >> gradle.properties
         
     - name: Build Release APK
-      run: ./gradlew assembleRelease
-      
+      run: |
+        # Use gradle directly instead of gradlew
+        gradle assembleRelease --stacktrace
+        
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
